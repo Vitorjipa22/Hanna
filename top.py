@@ -4,9 +4,8 @@ from tkinter import scrolledtext
 def MainMenu():
     root = Tk() 
 
-    root.geometry("450x300") 
+    root.geometry("900x500")
     root.title('Hanna')
-    root.geometry('300x200')
     root.configure(borderwidth=8)
     root.configure(background = '#1e3743')
     root.minsize(width=450, height=300)
@@ -23,10 +22,13 @@ def MainMenu():
         root.button.bind("<Button-1>", handle_event)
         root.button.pack(side='left', fill='x', expand=True)
 
+    root.button = Button(root, text='Sair', height=5, width=15, font=('arial', '9', 'bold'), command=root.destroy)
+    root.button.place(relx=0.01, rely=0.9, relwidth=0.2, relheight=0.1)
+
 
     root.mainloop() 
-    # root.pack(fill='both', expand=True)
     
+
 def Cad_Cabecalho(MenuCadastro): 
      
     Cad_Cabecalho = Toplevel(MenuCadastro)
@@ -49,14 +51,15 @@ def Cad_Cabecalho(MenuCadastro):
 
     Cad_Cabecalho.button = Button(Cad_Cabecalho, text='Voltar', height=5, width=15, font=('arial', '9', 'bold'), command=Cad_Cabecalho.destroy)
     Cad_Cabecalho.button.place(relx=0.01, rely=0.9, relwidth=0.2, relheight=0.1)
+
+    Cad_Cabecalho.button = Button(Cad_Cabecalho, text='Salvar', height=5, width=15, font=('arial', '9', 'bold'), command=Cad_Cabecalho.destroy)
+    Cad_Cabecalho.button.place(relx=0.79, rely=0.9, relwidth=0.2, relheight=0.1)
      
     # Display until closed manually.
     Cad_Cabecalho.mainloop()
       
 
 def MenuCadastro(root): 
-     
-    # Create widget
     MenuCadastro = Toplevel(root)
 
     MenuCadastro.title('Menu Cadastro')
@@ -72,9 +75,9 @@ def MenuCadastro(root):
         if btn_name == 'Cabeçalho':
             Cad_Cabecalho(MenuCadastro)
         if btn_name == 'Documentos':
-            pass
+            Cad_Documentos(MenuCadastro)
         if btn_name == 'Conclusão':
-            pass
+            Cad_Conclusao(MenuCadastro)
  
 
     for name in ("Cabeçalho", "Documentos", "Conclusão"):
@@ -87,5 +90,83 @@ def MenuCadastro(root):
 
     MenuCadastro.mainloop()
  
+
+def Cad_Documentos(MenuCadastro): 
+     
+    Cad_Documentos = Toplevel(MenuCadastro)
+    Cad_Documentos.title("Cadastro de Documentos")
+    Cad_Documentos.geometry("1100x700")
+    Cad_Documentos.configure(borderwidth=8)
+    Cad_Documentos.configure(background = '#1e3743')
+    Cad_Documentos.minsize(width=1100, height=700)
+    Cad_Documentos.focus_force()
+    Cad_Documentos.grab_set()
+
+    inputs = list()
+
+    def Get_inputs():
+        global inputs 
+        return inputs
+
+    def Save_inputs():
+        documentos = list()
+        documentos = [str(docs.get()) for docs in inputs]
+        print(documentos)
+        
+
+    for i in range(5):
+        for j in range(6):
+            Cad_Documentos.Label = Label(Cad_Documentos, text = ("Documento " + str((j+1)+(6*i))),font=('arial', '14'), background='#1e3743', foreground='white')
+            Cad_Documentos.Label.place(relx=(0.01 + (j*0.16)), rely=(0.13 + (i*0.15)), relwidth=0.15, relheight=0.03)
+
+            inputs.append(Entry(Cad_Documentos))
+            inputs[j + (6*i)].place(relx=(0.01 + (j*0.16)), rely=(0.16 + (i*0.15)), relwidth=0.15, relheight=0.03)
+
+
+    # Create label
+    label = Label(Cad_Documentos, text = "POSSIVEIS DOCUMENTOS",font=('arial', '14'), background='#1e3743', foreground='white')
+    label.place(relx=0.35, rely=0, relwidth=0.3, relheight=0.05)
+
+
+    Cad_Documentos.button = Button(Cad_Documentos, text='Voltar', height=5, width=15, font=('arial', '9', 'bold'), command=Cad_Documentos.destroy)
+    Cad_Documentos.button.place(relx=0.01, rely=0.9, relwidth=0.2, relheight=0.1)
+
+    Cad_Documentos.button = Button(Cad_Documentos, text='Salvar', height=5, width=15, font=('arial', '9', 'bold'), command=Save_inputs)
+    Cad_Documentos.button.place(relx=0.79, rely=0.9, relwidth=0.2, relheight=0.1)
+
+    # Display until closed manually.
+    Cad_Documentos.mainloop()
+      
+
+def Cad_Conclusao(MenuCadastro):
+
+         
+    Cad_Conclusao = Toplevel(MenuCadastro)
+    Cad_Conclusao.title("Cadastro Cabeçalho")
+    Cad_Conclusao.geometry("900x500")
+    Cad_Conclusao.configure(borderwidth=8)
+    Cad_Conclusao.configure(background = '#1e3743')
+    Cad_Conclusao.minsize(width=900, height=500)
+    Cad_Conclusao.focus_force()
+    Cad_Conclusao.grab_set()
+     
+    # Create label
+    label = Label(Cad_Conclusao, text = "CONCLUSÃO ",font=('arial', '14'), background='#1e3743', foreground='white')
+    label.place(relx=0.4, rely=0.01, relwidth=0.2, relheight=0.1)
+     
+
+    text_area = scrolledtext.ScrolledText(Cad_Conclusao, wrap=WORD, width=40, height=8, font=("Times New Roman", 15))
+    text_area.place(relx=0.01, rely=0.15, relwidth=0.99, relheight=0.7)
+    text_area.focus()
+
+    Cad_Conclusao.button = Button(Cad_Conclusao, text='Voltar', height=5, width=15, font=('arial', '9', 'bold'), command=Cad_Conclusao.destroy)
+    Cad_Conclusao.button.place(relx=0.01, rely=0.9, relwidth=0.2, relheight=0.1)
+
+    Cad_Conclusao.button = Button(Cad_Conclusao, text='Salvar', height=5, width=15, font=('arial', '9', 'bold'), command=Cad_Conclusao.destroy)
+    Cad_Conclusao.button.place(relx=0.79, rely=0.9, relwidth=0.2, relheight=0.1)
+     
+    # Display until closed manually.
+    Cad_Conclusao.mainloop()
+      
 
 MainMenu()
