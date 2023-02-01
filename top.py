@@ -15,7 +15,7 @@ def MainMenu():
         if btn_name == "Hanna Cadastro":
             MenuCadastro(root)
         if btn_name.endswith('Hanna Análise'):
-            pass
+            AnaliseHanna(root)
  
     for name in ("Hanna Cadastro", "Hanna Análise"):
         root.button = Button(root, text=name, height=5, width=15, font=('arial', '9', 'bold'))
@@ -168,5 +168,53 @@ def Cad_Conclusao(MenuCadastro):
     # Display until closed manually.
     Cad_Conclusao.mainloop()
       
+
+def AnaliseHanna(root):
+    AnaliseHanna = Toplevel(root)
+    AnaliseHanna.title("ANÁLISE DE DOCUMENTOS")
+    AnaliseHanna.geometry("1100x700")
+    AnaliseHanna.configure(borderwidth=8)
+    AnaliseHanna.configure(background = '#1e3743')
+    AnaliseHanna.minsize(width=1100, height=700)
+    AnaliseHanna.focus_force()
+    AnaliseHanna.grab_set()
+
+    checkvar = list()
+    checkbutton = list()
+    acabou = False
+        
+
+    for i in range(8):
+        for j in range(4):
+            AnaliseHanna.Label = Label(AnaliseHanna, text = ("O Documento " + str((j+1)+(4*i)) + " Foi apresentado?"),font=('arial', '12'), background='#1e3743', foreground='white')
+            AnaliseHanna.Label.place(relx=(0.01 + (j*0.25)), rely=(0.10 + (i*0.10)), relwidth=0.25, relheight=0.03)
+
+            checkvar.append(IntVar())
+            checkvar[j + (4*i)].set(0)
+
+            checkbutton.append(Checkbutton(AnaliseHanna, text=('Documento' + str((j+1)+(4*i))), variable = checkvar[j + (4*i)]))
+            checkbutton[j + (4*i)].place(relx=(0.02 + (j*0.25)), rely=(0.13 + (i*0.10)), relwidth=0.1, relheight=0.03)
+
+            if ((j+1)+(4*i)) == 30:
+                acabou = True
+                break
+
+        if acabou:
+            break
+            
+
+    label = Label(AnaliseHanna, text = "POSSIVEIS DOCUMENTOS",font=('arial', '14'), background='#1e3743', foreground='white')
+    label.place(relx=0.35, rely=0, relwidth=0.3, relheight=0.05)
+
+
+    AnaliseHanna.button = Button(AnaliseHanna, text='Voltar', height=5, width=15, font=('arial', '9', 'bold'), command=AnaliseHanna.destroy)
+    AnaliseHanna.button.place(relx=0.01, rely=0.9, relwidth=0.2, relheight=0.1)
+
+    AnaliseHanna.button = Button(AnaliseHanna, text='Salvar', height=5, width=15, font=('arial', '9', 'bold'), command=AnaliseHanna.destroy)
+    AnaliseHanna.button.place(relx=0.79, rely=0.9, relwidth=0.2, relheight=0.1)
+
+    # Display until closed manually.
+    AnaliseHanna.mainloop()
+
 
 MainMenu()
