@@ -15,7 +15,7 @@ def MainMenu():
         if btn_name == "Hanna Cadastro":
             MenuCadastro(root)
         if btn_name.endswith('Hanna Análise'):
-            AnaliseHanna(root)
+            MenuAnalise(root)
  
     for name in ("Hanna Cadastro", "Hanna Análise"):
         root.button = Button(root, text=name, height=5, width=15, font=('arial', '9', 'bold'))
@@ -27,54 +27,6 @@ def MainMenu():
 
 
     root.mainloop() 
-    
-  
-def AnaliseHanna(root):
-    AnaliseHanna = Toplevel(root)
-    AnaliseHanna.title("ANÁLISE DE DOCUMENTOS")
-    AnaliseHanna.geometry("900x700")
-    AnaliseHanna.configure(borderwidth=8)
-    AnaliseHanna.configure(background = '#1e3743')
-    AnaliseHanna.minsize(width=900, height=700)
-    AnaliseHanna.focus_force()
-    AnaliseHanna.grab_set()
-
-    checkvar = list()
-    checkbutton = list()
-    acabou = False
-        
-
-    for i in range(15):
-        for j in range(2):
-            AnaliseHanna.Label = Label(AnaliseHanna, text = ("O Documento " + str((i+1) + (j*15)) + " Foi apresentado?"),font=('arial', '12'), background='#1e3743', foreground='white')
-            AnaliseHanna.Label.place(relx=(0.05 + (j*0.5)), rely=(0.10 + (i*0.05)), relwidth=0.3, relheight=0.03)
-
-            checkvar.append(IntVar())
-            checkvar[j + (2*i)].set(0)
-
-            checkbutton.append(Checkbutton(AnaliseHanna, variable = checkvar[j + (2*i)]))
-            checkbutton[j + (2*i)].place(relx=(0.35 + (j*0.5)), rely=(0.10 + (i*0.05)), relwidth=0.03, relheight=0.03)
-
-            if ((j+1)+(2*i)) == 30:
-                acabou = True
-                break
-
-        if acabou:
-            break
-            
-
-    label = Label(AnaliseHanna, text = "ANÁLISE DE DOCUMENTOS",font=('arial', '14'), background='#1e3743', foreground='white')
-    label.place(relx=0.35, rely=0, relwidth=0.3, relheight=0.05)
-
-
-    AnaliseHanna.button = Button(AnaliseHanna, text='Voltar', height=5, width=15, font=('arial', '9', 'bold'), command=AnaliseHanna.destroy)
-    AnaliseHanna.button.place(relx=0.01, rely=0.9, relwidth=0.2, relheight=0.1)
-
-    AnaliseHanna.button = Button(AnaliseHanna, text='Salvar', height=5, width=15, font=('arial', '9', 'bold'), command=AnaliseHanna.destroy)
-    AnaliseHanna.button.place(relx=0.79, rely=0.9, relwidth=0.2, relheight=0.1)
-
-    # Display until closed manually.
-    AnaliseHanna.mainloop()
 
 
 def MenuCadastro(root): 
@@ -113,36 +65,69 @@ def MenuCadastro(root):
     MenuCadastro.mainloop()
 
 
-def Cad_Conclusao(MenuCadastro):
+def MenuAnalise(root): 
+    MenuAnalise = Toplevel(root)
 
-         
+    MenuAnalise.title('Menu Analise')
+    MenuAnalise.geometry("900x500")
+    MenuAnalise.configure(borderwidth=8)
+    MenuAnalise.configure(background = '#1e3743')
+    MenuAnalise.minsize(width=500, height=200)
+    MenuAnalise.focus_force()
+    MenuAnalise.grab_set()
+     
+    def handle_event(event):
+        btn_name = event.widget.cget('text')
+        if btn_name == 'Análise dos Documentos':
+            Ana_documentos(MenuAnalise)
+        if btn_name == 'Análise Pericial':
+            Ana_Pericial(MenuAnalise)
+        if btn_name == 'Análise Testemunhal':
+            Ana_Testemunhal(MenuAnalise)
+
+    for name in ("Análise dos Documentos", "Análise Pericial", "Análise Testemunhal"):
+        MenuAnalise.button = Button(MenuAnalise, text=name, height=5, width=15, font=('arial', '9', 'bold'))
+        MenuAnalise.button.bind("<Button-1>", handle_event)
+        MenuAnalise.button.pack(side='left', fill='x', expand=True)
+
+    MenuAnalise.button = Button(MenuAnalise, text='Voltar', height=5, width=15, font=('arial', '9', 'bold'), command=MenuAnalise.destroy)
+    MenuAnalise.button.place(relx=0.01, rely=0.9, relwidth=0.2, relheight=0.1)
+
+    MenuAnalise.mainloop()
+
+
+def Cad_Conclusao(MenuCadastro):
+  
     Cad_Conclusao = Toplevel(MenuCadastro)
     Cad_Conclusao.title("Cadastro Cabeçalho")
-    Cad_Conclusao.geometry("900x500")
+    Cad_Conclusao.geometry("1300x700")
     Cad_Conclusao.configure(borderwidth=8)
     Cad_Conclusao.configure(background = '#1e3743')
-    Cad_Conclusao.minsize(width=900, height=500)
+    Cad_Conclusao.minsize(width=1300, height=700)
     Cad_Conclusao.focus_force()
     Cad_Conclusao.grab_set()
+    text_area = list()
+
+    def SalvarConclusao(text_area):
+        for i in range(3):
+            arquivo = open('conclusao' + str(i+1) + '.txt', 'w+')
+            arquivo.writelines(str(text_area[i].get(1.0,END)))
+            arquivo.close()
      
-    # Create label
-
     for i in range(3):
-
-        label = Label(Cad_Conclusao, text = "CONCLUSÃO " + str(i+1),font=('arial', '14'), background='#1e3743', foreground='white')
-        label.place(relx=(0.06 + 0.33*i) , rely=0.01, relwidth=0.2, relheight=0.1)
         
+        label = Label(Cad_Conclusao, text = "CONCLUSÃO " + str(i+1),font=('arial', '14'), background='#1e3743', foreground='white')
+        label.place(relx=0.01 , rely=(0.01 + 0.27*i) , relwidth=0.11, relheight=0.07)
+        
+        text_area.append(scrolledtext.ScrolledText(Cad_Conclusao, wrap=WORD, width=2, height=80, font=("Times New Roman", 15)))
+        text_area[i].place(relx=(0.01), rely=(0.09 + 0.27*i), relwidth=0.98, relheight=0.17)
 
-        text_area = scrolledtext.ScrolledText(Cad_Conclusao, wrap=WORD, width=30, height=8, font=("Times New Roman", 15))
-        text_area.place(relx=(0.01 + 0.33*i), rely=0.15, relwidth=0.3, relheight=0.7)
-
-
-    text_area.focus()
+        text_area[i].focus()
 
     Cad_Conclusao.button = Button(Cad_Conclusao, text='Voltar', height=5, width=15, font=('arial', '9', 'bold'), command=Cad_Conclusao.destroy)
     Cad_Conclusao.button.place(relx=0.01, rely=0.9, relwidth=0.2, relheight=0.1)
 
-    Cad_Conclusao.button = Button(Cad_Conclusao, text='Salvar', height=5, width=15, font=('arial', '9', 'bold'), command=Cad_Conclusao.destroy)
+    Cad_Conclusao.button = Button(Cad_Conclusao, text='Salvar', height=5, width=15, font=('arial', '9', 'bold'), command=lambda: SalvarConclusao(text_area))
     Cad_Conclusao.button.place(relx=0.79, rely=0.9, relwidth=0.2, relheight=0.1)
      
     # Display until closed manually.
@@ -159,6 +144,11 @@ def Cad_Cabecalho(MenuCadastro):
     Cad_Cabecalho.minsize(width=900, height=500)
     Cad_Cabecalho.focus_force()
     Cad_Cabecalho.grab_set()
+
+    def SalvarCabecalho(text_area):
+        arquivo = open('cabecalho.txt', 'w+')
+        arquivo.writelines(str(text_area.get(1.0,END)))
+        arquivo.close()
      
     # Create label
     label = Label(Cad_Cabecalho, text = "CABEÇALHO ",font=('arial', '14'), background='#1e3743', foreground='white')
@@ -172,9 +162,9 @@ def Cad_Cabecalho(MenuCadastro):
     Cad_Cabecalho.button = Button(Cad_Cabecalho, text='Voltar', height=5, width=15, font=('arial', '9', 'bold'), command=Cad_Cabecalho.destroy)
     Cad_Cabecalho.button.place(relx=0.01, rely=0.9, relwidth=0.2, relheight=0.1)
 
-    Cad_Cabecalho.button = Button(Cad_Cabecalho, text='Salvar', height=5, width=15, font=('arial', '9', 'bold'), command=Cad_Cabecalho.destroy)
+    Cad_Cabecalho.button = Button(Cad_Cabecalho, text='Salvar', height=5, width=15, font=('arial', '9', 'bold'), command=lambda:SalvarCabecalho(text_area))
     Cad_Cabecalho.button.place(relx=0.79, rely=0.9, relwidth=0.2, relheight=0.1)
-     
+
     # Display until closed manually.
     Cad_Cabecalho.mainloop()
       
@@ -192,34 +182,35 @@ def Cad_Documentos(MenuCadastro):
 
     inputs = list()
 
-    def Get_inputs():
-        global inputs 
-        return inputs
-
-    def Save_inputs():
+    def Save_inputs(inputs):
         documentos = list()
-        documentos = [str(docs.get()) for docs in inputs]
+        documentos = [str(docs.get()) + "\n" for docs in inputs]
+
+        arquivo = open('documentos.txt', 'w+')
+        arquivo.writelines(documentos)
+        arquivo.close()
+     
         print(documentos)
         
 
-    for i in range(10):
-        for j in range(3):
-            Cad_Documentos.Label = Label(Cad_Documentos, text = ("Documento " + str((j+1)+(3*i))),font=('arial', '14'), background='#1e3743', foreground='white')
-            Cad_Documentos.Label.place(relx=(0.001 + (j*0.33)), rely=(0.13 + (i*0.07)), relwidth=0.15, relheight=0.03)
+    for i in range(2):
+        for j in range(8):
+            Cad_Documentos.Label = Label(Cad_Documentos, text = ("Documento " + str((j+1)+(8*i))),font=('arial', '14'), background='#1e3743', foreground='white')
+            Cad_Documentos.Label.place(relx=(0.001 + (i*0.51)), rely=(0.08 + (j*0.1)), relwidth=0.15, relheight=0.03)
 
             inputs.append(Entry(Cad_Documentos))
-            inputs[j + (3*i)].place(relx=(0.01 + (j*0.33)), rely=(0.16 + (i*0.07)), relwidth=0.3, relheight=0.03)
+            inputs[j + (8*i)].place(relx=(0.01 + (i*0.51)), rely=(0.11 + (j*0.1)), relwidth=0.47, relheight=0.05)
 
 
     # Create label
-    label = Label(Cad_Documentos, text = "POSSIVEIS DOCUMENTOS",font=('arial', '14'), background='#1e3743', foreground='white')
+    label = Label(Cad_Documentos, text = "POSSÍVEIS DOCUMENTOS",font=('arial', '14'), background='#1e3743', foreground='white')
     label.place(relx=0.35, rely=0, relwidth=0.3, relheight=0.05)
 
 
     Cad_Documentos.button = Button(Cad_Documentos, text='Voltar', height=5, width=15, font=('arial', '9', 'bold'), command=Cad_Documentos.destroy)
     Cad_Documentos.button.place(relx=0.01, rely=0.9, relwidth=0.2, relheight=0.1)
 
-    Cad_Documentos.button = Button(Cad_Documentos, text='Salvar', height=5, width=15, font=('arial', '9', 'bold'), command=Save_inputs)
+    Cad_Documentos.button = Button(Cad_Documentos, text='Salvar', height=5, width=15, font=('arial', '9', 'bold'), command=lambda:Save_inputs(inputs))
     Cad_Documentos.button.place(relx=0.79, rely=0.9, relwidth=0.2, relheight=0.1)
 
     # Display until closed manually.
@@ -228,7 +219,7 @@ def Cad_Documentos(MenuCadastro):
 
 def Cad_Pericial(MenuCadastro):
     Cad_Pericial = Toplevel(MenuCadastro)
-    Cad_Pericial.title("Cadastro de Documentos")
+    Cad_Pericial.title("Cadastro de Perguntas")
     Cad_Pericial.geometry("700x700")
     Cad_Pericial.configure(borderwidth=8)
     Cad_Pericial.configure(background = '#1e3743')
@@ -238,18 +229,16 @@ def Cad_Pericial(MenuCadastro):
 
     inputs = list()
 
-    def Get_inputs():
-        global inputs 
-        return inputs
+    def Save_inputs(inputs):
+        perguntas = list()
+        perguntas = [str(docs.get()) + "\n" for docs in inputs]
 
-    def Save_inputs():
-        documentos = list()
-        documentos = [str(docs.get()) for docs in inputs]
-        print(documentos)
+        arquivo = open('PerguntasPericial.txt', 'w+')
+        arquivo.writelines(perguntas)
+        arquivo.close()
         
-
     for i in range(5):
-        Cad_Pericial.Label = Label(Cad_Pericial, text = ("Documento " + str(i)),font=('arial', '14'), background='#1e3743', foreground='white')
+        Cad_Pericial.Label = Label(Cad_Pericial, text = ("Pergunta " + str(i+1)),font=('arial', '14'), background='#1e3743', foreground='white')
         Cad_Pericial.Label.place(relx=0.01, rely=(i*0.15 + 0.08), relwidth=0.20, relheight=0.03)
 
         inputs.append(Entry(Cad_Pericial))
@@ -264,7 +253,7 @@ def Cad_Pericial(MenuCadastro):
     Cad_Pericial.button = Button(Cad_Pericial, text='Voltar', height=5, width=15, font=('arial', '9', 'bold'), command=Cad_Pericial.destroy)
     Cad_Pericial.button.place(relx=0.01, rely=0.9, relwidth=0.2, relheight=0.1)
 
-    Cad_Pericial.button = Button(Cad_Pericial, text='Salvar', height=5, width=15, font=('arial', '9', 'bold'), command=Save_inputs)
+    Cad_Pericial.button = Button(Cad_Pericial, text='Salvar', height=5, width=15, font=('arial', '9', 'bold'), command=lambda:Save_inputs(inputs))
     Cad_Pericial.button.place(relx=0.79, rely=0.9, relwidth=0.2, relheight=0.1)
 
     # Display until closed manually.
@@ -283,18 +272,16 @@ def Cad_Testemunhal(MenuCadastro):
 
     inputs = list()
 
-    def Get_inputs():
-        global inputs 
-        return inputs
+    def Save_inputs(inputs):
+        perguntas = list()
+        perguntas = [str(docs.get()) + "\n" for docs in inputs]
 
-    def Save_inputs():
-        documentos = list()
-        documentos = [str(docs.get()) for docs in inputs]
-        print(documentos)
+        arquivo = open('PerguntasTestemunhal.txt', 'w+')
+        arquivo.writelines(perguntas)
+        arquivo.close()
         
-
     for i in range(5):
-        Cad_Testemunhal.Label = Label(Cad_Testemunhal, text = ("Documento " + str(i)),font=('arial', '14'), background='#1e3743', foreground='white')
+        Cad_Testemunhal.Label = Label(Cad_Testemunhal, text = ("Pergunta " + str(i+1)),font=('arial', '14'), background='#1e3743', foreground='white')
         Cad_Testemunhal.Label.place(relx=0.01, rely=(i*0.15 + 0.08), relwidth=0.20, relheight=0.03)
 
         inputs.append(Entry(Cad_Testemunhal))
@@ -309,11 +296,139 @@ def Cad_Testemunhal(MenuCadastro):
     Cad_Testemunhal.button = Button(Cad_Testemunhal, text='Voltar', height=5, width=15, font=('arial', '9', 'bold'), command=Cad_Testemunhal.destroy)
     Cad_Testemunhal.button.place(relx=0.01, rely=0.9, relwidth=0.2, relheight=0.1)
 
-    Cad_Testemunhal.button = Button(Cad_Testemunhal, text='Salvar', height=5, width=15, font=('arial', '9', 'bold'), command=Save_inputs)
+    Cad_Testemunhal.button = Button(Cad_Testemunhal, text='Salvar', height=5, width=15, font=('arial', '9', 'bold'), command=lambda: Save_inputs(inputs))
     Cad_Testemunhal.button.place(relx=0.79, rely=0.9, relwidth=0.2, relheight=0.1)
 
     # Display until closed manually.
     Cad_Testemunhal.mainloop()
+
+
+def Ana_documentos(MenuAnalise):
+    AnaliseHanna = Toplevel(MenuAnalise)
+    AnaliseHanna.title("ANÁLISE DE DOCUMENTOS")
+    AnaliseHanna.geometry("900x700")
+    AnaliseHanna.configure(borderwidth=8)
+    AnaliseHanna.configure(background = '#1e3743')
+    AnaliseHanna.minsize(width=900, height=700)
+    AnaliseHanna.focus_force()
+    AnaliseHanna.grab_set()
+
+    checkvar = list()
+    checkbutton = list()
+
+    for i in range(8):
+        for j in range(2):
+            AnaliseHanna.Label = Label(AnaliseHanna, text = ("O Documento " + str((i+1) + (j*8)) + " Foi apresentado?"),font=('arial', '12'), background='#1e3743', foreground='white')
+            AnaliseHanna.Label.place(relx=(0.05 + (j*0.5)), rely=(0.08 + (i*0.1)), relwidth=0.3, relheight=0.03)
+
+            checkvar.append(IntVar())
+            checkvar[j + (2*i)].set(0)
+
+            checkbutton.append(Checkbutton(AnaliseHanna, variable = checkvar[j + (2*i)]))
+            checkbutton[j + (2*i)].place(relx=(0.35 + (j*0.5)), rely=(0.08 + (i*0.1)), relwidth=0.03, relheight=0.03)
+
+    label = Label(AnaliseHanna, text = "ANÁLISE DE DOCUMENTOS",font=('arial', '14'), background='#1e3743', foreground='white')
+    label.place(relx=0.35, rely=0, relwidth=0.3, relheight=0.05)
+
+
+    AnaliseHanna.button = Button(AnaliseHanna, text='Voltar', height=5, width=15, font=('arial', '9', 'bold'), command=AnaliseHanna.destroy)
+    AnaliseHanna.button.place(relx=0.01, rely=0.9, relwidth=0.2, relheight=0.1)
+
+    AnaliseHanna.button = Button(AnaliseHanna, text='Salvar', height=5, width=15, font=('arial', '9', 'bold'), command=AnaliseHanna.destroy)
+    AnaliseHanna.button.place(relx=0.79, rely=0.9, relwidth=0.2, relheight=0.1)
+
+    # Display until closed manually.
+    AnaliseHanna.mainloop()
+
+
+def Ana_Pericial(MenuAnalise):
+    Ana_Pericial = Toplevel(MenuAnalise)
+    Ana_Pericial.title("Cadastro de Perguntas")
+    Ana_Pericial.geometry("1000x700")
+    Ana_Pericial.configure(borderwidth=8)
+    Ana_Pericial.configure(background = '#1e3743')
+    Ana_Pericial.minsize(width=700, height=700)
+    Ana_Pericial.focus_force()
+    Ana_Pericial.grab_set()
+    checkbutton = list()
+    checkvar = list()
+
+    inputs = list()
+
+    def Save_inputs():
+        documentos = list()
+        documentos = [str(docs.get()) for docs in inputs]
+        print(documentos)
+        
+
+    for i in range(5):
+        Ana_Pericial.Label = Label(Ana_Pericial, text = ("Pergunta " + str(i+1)),font=('arial', '14'), background='#1e3743', foreground='white')
+        Ana_Pericial.Label.place(relx=0.01, rely=(i*0.15 + 0.08), relwidth=0.16, relheight=0.04)
+
+        checkvar.append(IntVar())
+        checkvar[i].set(0)
+
+        checkbutton.append(Checkbutton(Ana_Pericial, variable = checkvar[i]))
+        checkbutton[i].place(relx=(0.05), rely=(0.13 + (i*0.15)), relwidth=0.03, relheight=0.03)
+
+    # Create label
+    label = Label(Ana_Pericial, text = "PROVA PERICIAL",font=('arial', '14'), background='#1e3743', foreground='white')
+    label.place(relx=0.35, rely=0, relwidth=0.3, relheight=0.05)
+
+
+    Ana_Pericial.button = Button(Ana_Pericial, text='Voltar', height=5, width=15, font=('arial', '9', 'bold'), command=Ana_Pericial.destroy)
+    Ana_Pericial.button.place(relx=0.01, rely=0.9, relwidth=0.2, relheight=0.1)
+
+    Ana_Pericial.button = Button(Ana_Pericial, text='Salvar', height=5, width=15, font=('arial', '9', 'bold'), command=Save_inputs)
+    Ana_Pericial.button.place(relx=0.79, rely=0.9, relwidth=0.2, relheight=0.1)
+
+    # Display until closed manually.
+    Ana_Pericial.mainloop()
+
+
+def Ana_Testemunhal(MenuAnalise):
+    Ana_Testemunhal = Toplevel(MenuAnalise)
+    Ana_Testemunhal.title("Cadastro de Perguntas")
+    Ana_Testemunhal.geometry("1000x700")
+    Ana_Testemunhal.configure(borderwidth=8)
+    Ana_Testemunhal.configure(background = '#1e3743')
+    Ana_Testemunhal.minsize(width=700, height=700)
+    Ana_Testemunhal.focus_force()
+    Ana_Testemunhal.grab_set()
+    checkbutton = list()
+    checkvar = list()
+
+    inputs = list()
+
+    def Save_inputs():
+        documentos = list()
+        documentos = [str(docs.get()) for docs in inputs]
+        print(documentos)
+        
+
+    for i in range(5):
+        Ana_Testemunhal.Label = Label(Ana_Testemunhal, text = ("Pergunta " + str(i+1)),font=('arial', '14'), background='#1e3743', foreground='white')
+        Ana_Testemunhal.Label.place(relx=0.01, rely=(i*0.15 + 0.08), relwidth=0.16, relheight=0.04)
+
+        checkvar.append(IntVar())
+        checkvar[i].set(0)
+
+        checkbutton.append(Checkbutton(Ana_Testemunhal, variable = checkvar[i]))
+        checkbutton[i].place(relx=(0.05), rely=(0.13 + (i*0.15)), relwidth=0.03, relheight=0.03)
+
+    # Create label
+    label = Label(Ana_Testemunhal, text = "PROVA TESTEMUNHAL",font=('arial', '14'), background='#1e3743', foreground='white')
+    label.place(relx=0.35, rely=0, relwidth=0.3, relheight=0.05)
+
+
+    Ana_Testemunhal.button = Button(Ana_Testemunhal, text='Voltar', height=5, width=15, font=('arial', '9', 'bold'), command=Ana_Testemunhal.destroy)
+    Ana_Testemunhal.button.place(relx=0.01, rely=0.9, relwidth=0.2, relheight=0.1)
+
+    Ana_Testemunhal.button = Button(Ana_Testemunhal, text='Salvar', height=5, width=15, font=('arial', '9', 'bold'), command=Save_inputs)
+    Ana_Testemunhal.button.place(relx=0.79, rely=0.9, relwidth=0.2, relheight=0.1)
+
+    # Display until closed manually.
+    Ana_Testemunhal.mainloop()
 
 
 MainMenu()
