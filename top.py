@@ -84,8 +84,10 @@ def MenuAnalise(root):
             Ana_Pericial(MenuAnalise)
         if btn_name == 'Análise Testemunhal':
             Ana_Testemunhal(MenuAnalise)
+        if btn_name == 'Gerar Minuta':
+            Gerar_Minuta(MenuAnalise)
 
-    for name in ("Análise dos Documentos", "Análise Pericial", "Análise Testemunhal"):
+    for name in ("Análise dos Documentos", "Análise Pericial", "Análise Testemunhal", "Gerar Minuta"):
         MenuAnalise.button = Button(MenuAnalise, text=name, height=5, width=15, font=('arial', '9', 'bold'))
         MenuAnalise.button.bind("<Button-1>", handle_event)
         MenuAnalise.button.pack(side='left', fill='x', expand=True)
@@ -184,7 +186,7 @@ def Cad_Documentos(MenuCadastro):
 
     def Save_inputs(inputs):
         documentos = list()
-        documentos = [str(docs.get()) + "\n" for docs in inputs]
+        documentos = [str(docs.get()) + '\n' for docs in inputs]
 
         arquivo = open('documentos.txt', 'w+')
         arquivo.writelines(documentos)
@@ -312,20 +314,80 @@ def Ana_documentos(MenuAnalise):
     AnaliseHanna.minsize(width=900, height=700)
     AnaliseHanna.focus_force()
     AnaliseHanna.grab_set()
+    ans = list()
+
+    k = 0
+    acabou = False
+
+    def LendoDocumentos():
+        try:
+            arquivo = open('documentos.txt', 'r')
+            linhas = arquivo.readlines()
+            documentos = list()
+
+            for linha in linhas:
+                if linha != '\n':
+                    documentos.append(linha)
+
+            return documentos
+
+        except Exception as e:
+            print(e)
+            pass
+
+
+    def SalvandoEntradas(checks):
+        n_checks = len(checks)
+
+        for i in range(n_checks):
+            ans.append(checks[i].get())
+        
+        Save_inputs(ans)
+        
+
+    def Save_inputs(inputs):
+        documentos = LendoDocumentos()
+        respostas = list()
+        
+        for i in range(len(inputs)):
+            if inputs[i] == 1:
+                respostas.append(documentos[i])
+
+
+        arquivo = open('documentosApresentados.txt', 'w+')
+        arquivo.writelines(respostas)
+        arquivo.close()
+     
+        print(respostas)
+
+    documentos = LendoDocumentos()
+    print(documentos)
+    ndoc = len(documentos)
 
     checkvar = list()
     checkbutton = list()
 
+    AnaliseHanna.Label = Label(AnaliseHanna, text = ("Marque os documentos que forão apresentados"),font=('arial', '12'), background='#1e3743', foreground='green')
+    AnaliseHanna.Label.place(relx=0.05, rely=0.03, relwidth=0.4, relheight=0.06)
+
     for i in range(8):
         for j in range(2):
-            AnaliseHanna.Label = Label(AnaliseHanna, text = ("O Documento " + str((i+1) + (j*8)) + " Foi apresentado?"),font=('arial', '12'), background='#1e3743', foreground='white')
-            AnaliseHanna.Label.place(relx=(0.05 + (j*0.5)), rely=(0.08 + (i*0.1)), relwidth=0.3, relheight=0.03)
+            AnaliseHanna.Label = Label(AnaliseHanna, text = (documentos[k]), font=('arial', '10'), background='#1e3743', foreground='white')
+            AnaliseHanna.Label.place(relx=(0.05 + (j*0.46)), rely=(0.1 + (i*0.1)), relwidth=0.4, relheight=0.06)
 
             checkvar.append(IntVar())
             checkvar[j + (2*i)].set(0)
 
             checkbutton.append(Checkbutton(AnaliseHanna, variable = checkvar[j + (2*i)]))
-            checkbutton[j + (2*i)].place(relx=(0.35 + (j*0.5)), rely=(0.08 + (i*0.1)), relwidth=0.03, relheight=0.03)
+            checkbutton[j + (2*i)].place(relx=(0.46 + (j*0.46)), rely=(0.1 + (i*0.1)), relwidth=0.03, relheight=0.03)
+            k = k+1
+
+            if k == ndoc:
+                acabou = True
+                break
+
+        if acabou:
+            break
 
     label = Label(AnaliseHanna, text = "ANÁLISE DE DOCUMENTOS",font=('arial', '14'), background='#1e3743', foreground='white')
     label.place(relx=0.35, rely=0, relwidth=0.3, relheight=0.05)
@@ -334,7 +396,7 @@ def Ana_documentos(MenuAnalise):
     AnaliseHanna.button = Button(AnaliseHanna, text='Voltar', height=5, width=15, font=('arial', '9', 'bold'), command=AnaliseHanna.destroy)
     AnaliseHanna.button.place(relx=0.01, rely=0.9, relwidth=0.2, relheight=0.1)
 
-    AnaliseHanna.button = Button(AnaliseHanna, text='Salvar', height=5, width=15, font=('arial', '9', 'bold'), command=AnaliseHanna.destroy)
+    AnaliseHanna.button = Button(AnaliseHanna, text='Salvar', height=5, width=15, font=('arial', '9', 'bold'), command=lambda:SalvandoEntradas(checkvar))
     AnaliseHanna.button.place(relx=0.79, rely=0.9, relwidth=0.2, relheight=0.1)
 
     # Display until closed manually.
@@ -350,19 +412,40 @@ def Ana_Pericial(MenuAnalise):
     Ana_Pericial.minsize(width=700, height=700)
     Ana_Pericial.focus_force()
     Ana_Pericial.grab_set()
+
     checkbutton = list()
     checkvar = list()
 
-    inputs = list()
+    k=0
 
-    def Save_inputs():
-        documentos = list()
-        documentos = [str(docs.get()) for docs in inputs]
-        print(documentos)
+    def SalvandoEntradas(checks):
+        n_checks = len(checks)
+        ans = list()
+
+        for i in range(n_checks):
+            ans.append(checks[i].get())
+
+    def LendoDocumentos():
+        try:
+            arquivo = open('PerguntasPericial.txt', 'r')
+            linhas = arquivo.readlines()
+            documentos = list()
+
+            for linha in linhas:
+                if linha != '\n':
+                    documentos.append(linha)
+
+            return documentos
+
+        except Exception as e:
+            print(e)
+            pass
         
+    documentos = LendoDocumentos()
+    ndoc = len(documentos)
 
     for i in range(5):
-        Ana_Pericial.Label = Label(Ana_Pericial, text = ("Pergunta " + str(i+1)),font=('arial', '14'), background='#1e3743', foreground='white')
+        Ana_Pericial.Label = Label(Ana_Pericial, text = (documentos[k]),font=('arial', '14'), background='#1e3743', foreground='white')
         Ana_Pericial.Label.place(relx=0.01, rely=(i*0.15 + 0.08), relwidth=0.16, relheight=0.04)
 
         checkvar.append(IntVar())
@@ -370,6 +453,9 @@ def Ana_Pericial(MenuAnalise):
 
         checkbutton.append(Checkbutton(Ana_Pericial, variable = checkvar[i]))
         checkbutton[i].place(relx=(0.05), rely=(0.13 + (i*0.15)), relwidth=0.03, relheight=0.03)
+        k = k+1
+        if k == ndoc:
+            break
 
     # Create label
     label = Label(Ana_Pericial, text = "PROVA PERICIAL",font=('arial', '14'), background='#1e3743', foreground='white')
@@ -379,7 +465,7 @@ def Ana_Pericial(MenuAnalise):
     Ana_Pericial.button = Button(Ana_Pericial, text='Voltar', height=5, width=15, font=('arial', '9', 'bold'), command=Ana_Pericial.destroy)
     Ana_Pericial.button.place(relx=0.01, rely=0.9, relwidth=0.2, relheight=0.1)
 
-    Ana_Pericial.button = Button(Ana_Pericial, text='Salvar', height=5, width=15, font=('arial', '9', 'bold'), command=Save_inputs)
+    Ana_Pericial.button = Button(Ana_Pericial, text='Salvar', height=5, width=15, font=('arial', '9', 'bold'), command=lambda:SalvandoEntradas(checkvar))
     Ana_Pericial.button.place(relx=0.79, rely=0.9, relwidth=0.2, relheight=0.1)
 
     # Display until closed manually.
@@ -395,40 +481,113 @@ def Ana_Testemunhal(MenuAnalise):
     Ana_Testemunhal.minsize(width=700, height=700)
     Ana_Testemunhal.focus_force()
     Ana_Testemunhal.grab_set()
+
     checkbutton = list()
     checkvar = list()
 
-    inputs = list()
+    k = 0
 
-    def Save_inputs():
-        documentos = list()
-        documentos = [str(docs.get()) for docs in inputs]
-        print(documentos)
-        
+    def LendoDocumentos():
+        try:
+            arquivo = open('PerguntasTestemunhal.txt', 'r')
+            linhas = arquivo.readlines()
+            documentos = list()
+
+            for linha in linhas:
+                if linha != '\n':
+                    documentos.append(linha)
+
+            return documentos
+
+        except Exception as e:
+            print(e)
+            pass
+
+    documentos = LendoDocumentos()
+    ndoc = len(documentos)
 
     for i in range(5):
-        Ana_Testemunhal.Label = Label(Ana_Testemunhal, text = ("Pergunta " + str(i+1)),font=('arial', '14'), background='#1e3743', foreground='white')
-        Ana_Testemunhal.Label.place(relx=0.01, rely=(i*0.15 + 0.08), relwidth=0.16, relheight=0.04)
+        Ana_Testemunhal.Label = Label(Ana_Testemunhal, text = (documentos[k]),font=('arial', '14'), background='#1e3743', foreground='white')
+        Ana_Testemunhal.Label.place(relx=0.01, rely=(i*0.15 + 0.08), relwidth=0., relheight=0.04)
 
         checkvar.append(IntVar())
         checkvar[i].set(0)
 
         checkbutton.append(Checkbutton(Ana_Testemunhal, variable = checkvar[i]))
         checkbutton[i].place(relx=(0.05), rely=(0.13 + (i*0.15)), relwidth=0.03, relheight=0.03)
+        k=k+1
 
-    # Create label
+        if k == ndoc:
+            break
+
     label = Label(Ana_Testemunhal, text = "PROVA TESTEMUNHAL",font=('arial', '14'), background='#1e3743', foreground='white')
     label.place(relx=0.35, rely=0, relwidth=0.3, relheight=0.05)
-
 
     Ana_Testemunhal.button = Button(Ana_Testemunhal, text='Voltar', height=5, width=15, font=('arial', '9', 'bold'), command=Ana_Testemunhal.destroy)
     Ana_Testemunhal.button.place(relx=0.01, rely=0.9, relwidth=0.2, relheight=0.1)
 
-    Ana_Testemunhal.button = Button(Ana_Testemunhal, text='Salvar', height=5, width=15, font=('arial', '9', 'bold'), command=Save_inputs)
+    Ana_Testemunhal.button = Button(Ana_Testemunhal, text='Salvar', height=5, width=15, font=('arial', '9', 'bold'), command=Ana_Testemunhal.destroy)
     Ana_Testemunhal.button.place(relx=0.79, rely=0.9, relwidth=0.2, relheight=0.1)
 
     # Display until closed manually.
     Ana_Testemunhal.mainloop()
+
+
+def Gerar_Minuta(MenuAnalise):
+    Minuta = Toplevel(MenuAnalise)
+    Minuta.title("Cadastro de Perguntas")
+    Minuta.geometry("1000x700")
+    Minuta.configure(borderwidth=8)
+    Minuta.configure(background = '#1e3743')
+    Minuta.minsize(width=700, height=700)
+    Minuta.focus_force()
+    Minuta.grab_set()
+
+
+    def LendoDocumentos():
+
+        doc_final = list()
+        try:
+            arquivo = open('documentosApresentados.txt', 'r')
+            linhas = arquivo.readlines()
+            documentos = list()
+
+            for linha in linhas:
+                if linha != '\n':
+                    documentos.append(linha)
+
+            arquivo.close()
+            arquivo = open('cabecalho.txt')
+            linhas = arquivo.readlines()
+            cabecalho = list()
+
+            for linha in linhas:
+                if linha != '\n':
+                    cabecalho.append(linha)
+                
+            arquivo.close()
+            arquivo = open('conclusao1.txt')
+            linhas = arquivo.readlines()
+            conclusao = list()
+
+            for linha in linhas:
+                if linha != '\n':
+                    conclusao.append(linha)
+
+            doc_final.extend(cabecalho)
+            doc_final.extend(documentos)
+            doc_final.extend(conclusao)
+
+            print(doc_final)
+
+        except Exception as e:
+            print(e)
+            pass
+    
+
+    LendoDocumentos()
+    
+    Minuta.mainloop()
 
 
 MainMenu()
