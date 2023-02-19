@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import scrolledtext
+from tkinter import messagebox
 
 def MainMenu():
     root = Tk() 
@@ -78,14 +79,87 @@ def MenuAnalise(root):
      
     def handle_event(event):
         btn_name = event.widget.cget('text')
+
         if btn_name == 'Análise dos Documentos':
-            Ana_documentos(MenuAnalise)
+            cont = 0
+            try:
+                arquivo = open('documentos.txt', 'r')
+                linhas = arquivo.readlines()
+                documentos = list()
+                for linha in linhas:
+                    if linha != '\n':
+                        documentos.append(linha)
+                    else:
+                        cont += 1
+
+            except Exception as e:
+                print(e)
+            
+            if cont != 16:
+                Ana_documentos(MenuAnalise)
+            else:
+                messagebox.showinfo("Documetos faltantes", "Os documentos ainda não foram cadastrados")
+
         if btn_name == 'Análise Pericial':
-            Ana_Pericial(MenuAnalise)
+            cont = 0
+            try:
+                arquivo = open('PerguntasPericial.txt', 'r')
+                linhas = arquivo.readlines()
+                documentos = list()
+
+                for linha in linhas:
+                    if linha != '\n':
+                        documentos.append(linha)
+                    else:
+                        cont += 1
+                if cont == 5:
+                    messagebox.showinfo("Perguntas faltantes", "Nenhuma pergunta cadastrada")
+                else:
+                    Ana_Pericial(MenuAnalise)
+
+            except Exception as e:
+                print(e)
+
         if btn_name == 'Análise Testemunhal':
-            Ana_Testemunhal(MenuAnalise)
+            cont = 0
+            try:
+                arquivo = open('PerguntasTestemunhal.txt', 'r')
+                linhas = arquivo.readlines()
+                documentos = list()
+
+                for linha in linhas:
+                    if linha != '\n':
+                        documentos.append(linha)
+                    else:
+                        cont += 1
+                if cont == 5:
+                    messagebox.showinfo("Perguntas faltantes", "As perguntas ainda não foram cadastrados")
+                else:
+                    Ana_Testemunhal(MenuAnalise)
+
+            except Exception as e:
+                print(e)
+ 
         if btn_name == 'Gerar Minuta':
-            Gerar_Minuta(MenuAnalise)
+            cont = 0
+            try:
+                arquivo = open('documentos.txt', 'r')
+                linhas = arquivo.readlines()
+                documentos = list()
+                for linha in linhas:
+                    if linha != '\n':
+                        documentos.append(linha)
+                    else:
+                        cont += 1
+
+            except Exception as e:
+                print(e)
+                
+            if cont != 16:
+                Gerar_Minuta(MenuAnalise)
+            else:
+                messagebox.showinfo("Documetos faltantes", "Os documentos ainda não foram cadastrados")
+                
 
     for name in ("Análise dos Documentos", "Análise Pericial", "Análise Testemunhal", "Gerar Minuta"):
         MenuAnalise.button = Button(MenuAnalise, text=name, height=5, width=15, font=('arial', '9', 'bold'))
@@ -191,10 +265,7 @@ def Cad_Documentos(MenuCadastro):
         arquivo = open('documentos.txt', 'w+')
         arquivo.writelines(documentos)
         arquivo.close()
-     
-        print(documentos)
         
-
     for i in range(2):
         for j in range(8):
             Cad_Documentos.Label = Label(Cad_Documentos, text = ("Documento " + str((j+1)+(8*i))),font=('arial', '14'), background='#1e3743', foreground='white')
@@ -357,11 +428,8 @@ def Ana_documentos(MenuAnalise):
         arquivo = open('documentosApresentados.txt', 'w+')
         arquivo.writelines(respostas)
         arquivo.close()
-     
-        print(respostas)
 
     documentos = LendoDocumentos()
-    print(documentos)
     ndoc = len(documentos)
 
     checkvar = list()
@@ -372,7 +440,10 @@ def Ana_documentos(MenuAnalise):
 
     for i in range(8):
         for j in range(2):
-            AnaliseHanna.Label = Label(AnaliseHanna, text = (documentos[k]), font=('arial', '10'), background='#1e3743', foreground='white')
+            if len(documentos[k])>51:
+                AnaliseHanna.Label = Label(AnaliseHanna, text = (documentos[k][:47]+"..."), font=('arial', '10'), background='#1e3743', foreground='white')
+            else:
+                AnaliseHanna.Label = Label(AnaliseHanna, text = (documentos[k]), font=('arial', '10'), background='#1e3743', foreground='white')
             AnaliseHanna.Label.place(relx=(0.05 + (j*0.46)), rely=(0.1 + (i*0.1)), relwidth=0.4, relheight=0.06)
 
             checkvar.append(IntVar())
@@ -439,7 +510,6 @@ def Ana_Pericial(MenuAnalise):
 
         except Exception as e:
             print(e)
-            pass
         
     documentos = LendoDocumentos()
     ndoc = len(documentos)
@@ -535,7 +605,7 @@ def Ana_Testemunhal(MenuAnalise):
 
 def Gerar_Minuta(MenuAnalise):
     Minuta = Toplevel(MenuAnalise)
-    Minuta.title("Cadastro de Perguntas")
+    Minuta.title("MINUTA SUGERIDA")
     Minuta.geometry("1000x700")
     Minuta.configure(borderwidth=8)
     Minuta.configure(background = '#1e3743')
@@ -554,7 +624,7 @@ def Gerar_Minuta(MenuAnalise):
 
             for linha in linhas:
                 if linha != '\n':
-                    documentos.append(linha)
+                    documentos.append('-    ' + linha)
 
             arquivo.close()
             arquivo = open('cabecalho.txt')
@@ -575,17 +645,39 @@ def Gerar_Minuta(MenuAnalise):
                     conclusao.append(linha)
 
             doc_final.extend(cabecalho)
+            doc_final.extend(['\n'])
             doc_final.extend(documentos)
+            doc_final.extend(['\n'])
             doc_final.extend(conclusao)
 
-            print(doc_final)
+            return doc_final
 
         except Exception as e:
             print(e)
-            pass
-    
 
-    LendoDocumentos()
+    minuta = str()
+    docs = LendoDocumentos()
+
+    for i in range(len(docs)):
+        minuta = minuta + docs[i]
+    print(minuta)
+    print(type(minuta))
+
+    label = Label(Minuta, text = "MINUTA ",font=('arial', '14'), background='#1e3743', foreground='white')
+    label.place(relx=0.01 , rely=(0.01) , relwidth=0.11, relheight=0.07)
+    
+    text_area = scrolledtext.ScrolledText(Minuta, wrap=WORD, width=2, height=80, font=("Times New Roman", 15))
+    text_area.place(relx=0.01, rely=0.09, relwidth=0.98, relheight=0.82)
+    text_area.insert(1.0,minuta)
+
+    text_area.focus()
+
+    Minuta.button = Button(Minuta, text='Voltar', height=5, width=15, font=('arial', '9', 'bold'), command=Minuta.destroy)
+    Minuta.button.place(relx=0.01, rely=0.9, relwidth=0.2, relheight=0.1)
+
+    Minuta.button = Button(Minuta, text='Salvar', height=5, width=15, font=('arial', '9', 'bold'), command=Minuta.destroy)
+    Minuta.button.place(relx=0.79, rely=0.9, relwidth=0.2, relheight=0.1)
+
     
     Minuta.mainloop()
 
